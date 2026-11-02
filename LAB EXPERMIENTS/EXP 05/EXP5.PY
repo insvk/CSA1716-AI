@@ -1,34 +1,77 @@
-﻿from collections import deque
+from collections import deque
 
-def is_valid(m, c):
-    if m < 0 or m > 3 or c < 0 or c > 3:
+MISSIONARIES = 3
+CANNIBALS = 3
+
+
+def is_valid(state):
+    m_left, c_left, boat = state
+    m_right = MISSIONARIES - m_left
+    c_right = CANNIBALS - c_left
+
+    # Check left bank safety
+    if m_left > 0 and c_left > m_left:
         return False
-    if (m > 0 and m < c) or (3 - m > 0 and 3 - m < 3 - c):
+    # Check right bank safety
+    if m_right > 0 and c_right > m_right:
         return False
     return True
 
+
+def next_states(state):
+    m_left, c_left, boat = state
+    moves = []
+
+    for m in range(3):
+        for c in range(3):
+            if m + c == 0 or m + c > 2:
+                continue
+
+            if boat == 1:  # boat on left
+                nm = m_left - m
+                nc = c_left - c
+                if nm < 0 or nc < 0:
+                    continue
+                next_state = (nm, nc, 0)
+            else:  # boat on right
+                nm = m_left + m
+                nc = c_left + c
+                if nm > MISSIONARIES or nc > CANNIBALS:
+                    continue
+                next_state = (nm, nc, 1)
+
+            if is_valid(next_state):
+                moves.append(next_state)
+
+    return moves
+
+
 def solve():
-    start = (3, 3, 1)
+    start = (MISSIONARIES, CANNIBALS, 1)  # (m_left, c_left, boat_on_left)
     goal = (0, 0, 0)
-    queue = deque([[start]])
+
+    queue = deque([(start, [start])])
     visited = {start}
-    moves = [(1, 0), (2, 0), (0, 1), (0, 2), (1, 1)]
+
     while queue:
-        path = queue.popleft()
-        m, c, b = path[-1]
-        if (m, c, b) == goal:
+        state, path = queue.popleft()
+
+        if state == goal:
             return path
-        for dm, dc in moves:
-            if b == 1:
-                nm, nc, nb = m - dm, c - dc, 0
-            else:
-                nm, nc, nb = m + dm, c + dc, 1
-            if is_valid(nm, nc) and (nm, nc, nb) not in visited:
-                visited.add((nm, nc, nb))
-                queue.append(path + [(nm, nc, nb)])
+
+        for nxt in next_states(state):
+            if nxt not in visited:
+                visited.add(nxt)
+                queue.append((nxt, path + [nxt]))
+
     return None
 
+
 path = solve()
-for m, c, b in path:
-    side = "Left" if b == 1 else "Right"
-    print(f"Missionaries: {m}, Cannibals: {c}, Boat: {side}")
+if path is None:
+    print("No solution found.")
+else:
+    print("Missionaries and Cannibals Solution:")
+    for i, (m, c, boat) in enumerate(path, start=1):
+        side = "Left" if boat == 1 else "Right"
+        print(f"Step {i}: Missionaries={m}, Cannibals={c}, Boat={side}")
