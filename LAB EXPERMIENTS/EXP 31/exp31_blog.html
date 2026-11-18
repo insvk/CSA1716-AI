@@ -1,18 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <!-- Title Tag Demonstration -->
-    <title>My Tech Blog</title>
+    <!-- HTML title tag: appears in the browser title bar/tab -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Technology Blog</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: Arial, sans-serif; background: #f4f6f8; color: #222; }
+        header { background: #1976d2; color: white; padding: 24px; text-align: center; }
+        nav { background: #1565c0; padding: 10px; text-align: center; }
+        nav a { color: white; margin: 0 12px; text-decoration: none; }
+        main { display: flex; max-width: 1000px; margin: 20px auto; gap: 20px; }
+        article { flex: 3; background: white; padding: 24px; border-radius: 8px; }
+        aside { flex: 1; background: white; padding: 20px; border-radius: 8px; }
+        footer { background: #263238; color: white; text-align: center; padding: 16px; }
+        a.demo-link { color: #1976d2; font-weight: bold; }
+    </style>
 </head>
 <body>
-    <h1>Welcome to My Tech Blog</h1>
-    
-    <article>
-        <h2 title="Hovering over this shows the title tag property!">Understanding HTML Basics</h2>
-        <p>In this post, we are learning about fundamental tags. You can read more about HTML at the official documentation.</p>
-        
-        <!-- Anchor Tag Demonstration -->
-        <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank" title="Visit MDN HTML Docs">Click here to learn more about HTML</a>
-    </article>
+    <header title="Header title attribute demonstration">
+        <h1>My Technology Blog</h1>
+        <p>Learning HTML, web development, and artificial intelligence</p>
+    </header>
+
+    <nav aria-label="Main navigation">
+        <a href="#home" title="Go to home">Home</a>
+        <a href="#article" title="Read the blog article">Blog</a>
+        <a href="#about" title="About this blog">About</a>
+    </nav>
+
+    <main id="home">
+        <article id="article">
+            <h2>Understanding HTML Basics</h2>
+            <p>
+                HTML provides the structure of a web page. Tags such as
+                <code>&lt;header&gt;</code>, <code>&lt;article&gt;</code>,
+                <code>&lt;aside&gt;</code>, and <code>&lt;footer&gt;</code>
+                improve readability and page structure.
+            </p>
+
+            <!-- Anchor tag demonstration -->
+            <p>
+                Visit
+                <a class="demo-link" href="https://developer.mozilla.org/en-US/docs/Web/HTML"
+                   target="_blank" rel="noopener noreferrer"
+                   title="Open the MDN HTML documentation in a new tab">MDN HTML Documentation</a>
+                to learn more.
+            </p>
+        </article>
+
+        <aside id="about">
+            <h3>About</h3>
+            <p>This static web page demonstrates title, navigation, article, anchor, sidebar, and footer elements.</p>
+        </aside>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Technology Blog</p>
+    </footer>
 </body>
 </html>
