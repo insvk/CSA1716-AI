@@ -1,25 +1,31 @@
+from pathlib import Path
+
 import cv2
 import numpy as np
 
-# Create a synthetic image for segmentation
-img = np.zeros((200, 200, 3), dtype=np.uint8)
-img[:, :100] = [255, 0, 0]   # Blue left
-img[:, 100:] = [0, 255, 0]   # Green right
-cv2.circle(img, (100, 100), 50, (0, 0, 255), -1) # Red circle in center
+# Create a reproducible synthetic image.
+image = np.zeros((200, 200, 3), dtype=np.uint8)
+image[:, :100] = [255, 0, 0]
+image[:, 100:] = [0, 255, 0]
+cv2.circle(image, (100, 100), 50, (0, 0, 255), -1)
 
-# Reshape image for k-means processing
-pixel_values = img.reshape((-1, 3))
-pixel_values = np.float32(pixel_values)
+pixels = np.float32(image.reshape(-1, 3))
+criteria = (
+    cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER,
+    100,
+    0.2,
+)
 
-# Define criteria and apply K-Means for image segmentation
-criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.2)
-k = 3 # Segment into 3 colors
-_, labels, centers = cv2.kmeans(pixel_values, k, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
+_, labels, centers = cv2.kmeans(
+    pixels,
+    3,
+    None,
+    criteria,
+    10,
+    cv2.KMEANS_PP_CENTERS,
+)
 
-# Reconstruct segmented image
-centers = np.uint8(centers)
-segmented_data = centers[labels.flatten()]
-segmented_image = segmented_data.reshape((img.shape))
-
-cv2.imwrite("segmented_output.jpg", segmented_image)
-print("Image segmentation complete. Output saved as 'segmented_output.jpg'.")
+segmented = np.uint8(centers)[labels.flatten()].reshape(image.shape)
+output_path = Path(__file__).resolve().parent / "segmented_output.jpg"
+cv2.imwrite(str(output_path), segmented)
+print(f"Image segmentation complete. Output saved at: {output_path}")

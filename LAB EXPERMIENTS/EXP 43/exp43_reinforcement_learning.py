@@ -1,35 +1,49 @@
-import numpy as np
 import random
 
-# Simple 1D Environment: States 0 to 4. Goal is state 4.
-# Actions: 0 (move left), 1 (move right)
+import numpy as np
+
+# A reproducible tabular Q-Learning example.
 NUM_STATES = 5
 NUM_ACTIONS = 2
-Q = np.zeros((NUM_STATES, NUM_ACTIONS))
+GOAL_STATE = NUM_STATES - 1
+LEARNING_RATE = 0.8
+DISCOUNT_FACTOR = 0.95
+EPISODES = 500
+EPSILON_START = 1.0
+EPSILON_END = 0.05
 
-learning_rate = 0.8
-discount_factor = 0.95
-epochs = 200
+random.seed(42)
+np.random.seed(42)
+Q = np.zeros((NUM_STATES, NUM_ACTIONS), dtype=float)
 
-# Training the RL Agent using Q-Learning
-for _ in range(epochs):
-    state = 0 # Start state
-    while state != 4: # While goal not reached
-        # Epsilon-greedy action selection
-        if random.uniform(0, 1) < 0.1:
-            action = random.choice([0, 1])
+
+for episode in range(EPISODES):
+    state = 0
+    epsilon = EPSILON_END + (EPSILON_START - EPSILON_END) * (1 - episode / EPISODES)
+
+    while state != GOAL_STATE:
+        if random.random() < epsilon:
+            action = random.randrange(NUM_ACTIONS)
         else:
-            action = np.argmax(Q[state])
-        
-        # Environment transition
-        next_state = max(0, state - 1) if action == 0 else min(NUM_STATES - 1, state + 1)
-        reward = 1 if next_state == 4 else 0
-        
-        # Q-value update
-        Q[state, action] = Q[state, action] + learning_rate * (
-            reward + discount_factor * np.max(Q[next_state]) - Q[state, action]
+            action = int(np.argmax(Q[state]))
+
+        if action == 0:
+            next_state = max(0, state - 1)
+        else:
+            next_state = min(GOAL_STATE, state + 1)
+
+        reward = 10.0 if next_state == GOAL_STATE else -0.1
+        Q[state, action] += LEARNING_RATE * (
+            reward
+            + DISCOUNT_FACTOR * np.max(Q[next_state])
+            - Q[state, action]
         )
         state = next_state
 
-print("Trained Q-Table (State x Action):\n", np.round(Q, 3))
-print("Optimal policy prefers moving right (action 1) to reach state 4.")
+print("Trained Q-Table (State x Action):")
+print(np.round(Q, 3))
+
+print("Optimal learned policy:")
+for state in range(NUM_STATES):
+    action = int(np.argmax(Q[state]))
+    print(f"State {state}: {'left' if action == 0 else 'right'}")
