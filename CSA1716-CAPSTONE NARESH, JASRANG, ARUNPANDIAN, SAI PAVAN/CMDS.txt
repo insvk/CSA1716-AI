@@ -1,0 +1,48 @@
+PROJECT URL: https://wokwi.com/projects/477142978999272449
+
+
+
+
+PARKFLOW:
+cd /d "S:\vs code\CAPSTONE\CSA1716\PARKINGSTAT-REALTIME-DASHBOARD"
+npx serve public
+
+NODE RED:
+node-red
+
+npm install -g --unsafe-perm node-red
+
+
+
+v2:(WITH ML INTEGRATION)
+
+first:
+NODE RED:
+node-red
+
+npm install -g --unsafe-perm node-red
+
+
+next: (parflow dashboard v2)
+cd /d "S:\vs code\CAPSTONE\CSA1716\v2\PARKINGSTAT-REALTIME-DASHBOARD"
+
+npx serve public -l 3000
+
+cd /d "S:\vs code\CAPSTONE\CSA1716\v2\PARKINGSTAT-REALTIME-DASHBOARD\api"
+
+.venv\Scripts\activate
+
+python app.py
+
+(ML ALGORITHM WE USED : Random Forest Classifier)
+CORE:
+Plain text
+ESP32
+  ↓
+HiveMQ MQTT Broker
+  ↓
+Node-RED MQTT Input
+  ↓
+JSON Processing
+  ↓
+Debug Output
